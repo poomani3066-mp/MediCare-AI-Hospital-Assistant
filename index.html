@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>MediCare AI</title>
 
     <style>
@@ -19,12 +20,12 @@
         }
 
         header {
-            background: #ffffff;
-            padding: 18px 7%;
+            background: white;
+            padding: 20px 8%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #e5e9f0;
+            border-bottom: 1px solid #ddd;
         }
 
         .logo {
@@ -37,75 +38,48 @@
         }
 
         nav a {
-            margin-left: 25px;
+            margin-left: 20px;
             text-decoration: none;
-            color: #526071;
-            font-size: 14px;
+            color: #555;
         }
 
         .hero {
-            padding: 60px 7%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 40px;
+            padding: 70px 8%;
+            text-align: center;
         }
 
-        .hero-text {
-            max-width: 600px;
-        }
-
-        .tag {
-            color: #2674e8;
-            font-weight: bold;
+        .hero h1 {
+            font-size: 44px;
             margin-bottom: 15px;
         }
 
-        h1 {
-            font-size: 46px;
-            line-height: 1.1;
-            margin-bottom: 18px;
+        .hero h1 span {
+            color: #2674e8;
         }
 
         .hero p {
             color: #687386;
+            max-width: 650px;
+            margin: auto;
             line-height: 1.7;
-            margin-bottom: 25px;
         }
 
-        .btn {
+        .button {
+            margin-top: 25px;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 8px;
             background: #2674e8;
             color: white;
-            border: none;
-            padding: 13px 22px;
-            border-radius: 8px;
+            font-size: 15px;
             cursor: pointer;
-            font-weight: bold;
         }
 
-        .hero-card {
-            background: white;
-            padding: 30px;
-            width: 300px;
-            border-radius: 18px;
-            box-shadow: 0 10px 35px rgba(30, 60, 100, 0.1);
+        .section {
+            padding: 20px 8% 60px;
         }
 
-        .status {
-            color: #159447;
-            font-size: 14px;
-            margin-bottom: 18px;
-        }
-
-        .hero-card h2 {
-            margin-bottom: 12px;
-        }
-
-        .services {
-            padding: 20px 7% 60px;
-        }
-
-        .services h2 {
+        .section h2 {
             margin-bottom: 25px;
         }
 
@@ -119,10 +93,10 @@
             background: white;
             padding: 25px;
             border-radius: 14px;
-            border: 1px solid #e7ebf1;
+            border: 1px solid #e3e7ed;
         }
 
-        .icon {
+        .card .icon {
             font-size: 30px;
             margin-bottom: 15px;
         }
@@ -132,53 +106,50 @@
         }
 
         .card p {
-            color: #697587;
+            color: #687386;
+            line-height: 1.6;
             font-size: 14px;
+        }
+
+        .assistant {
+            background: white;
+            margin: 20px 8% 60px;
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin: 15px 0;
+            padding: 15px;
+            border: 1px solid #ccd3dd;
+            border-radius: 8px;
+            resize: none;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f1f5fa;
+            border-radius: 8px;
             line-height: 1.6;
         }
 
-        .appointment {
-            margin: 0 7% 60px;
-            background: white;
-            padding: 30px;
-            border-radius: 16px;
-        }
-
-        .appointment input,
-        .appointment select {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0 15px;
-            border: 1px solid #d8dee8;
-            border-radius: 7px;
-        }
-
-        .message {
-            margin-top: 15px;
-            color: #159447;
-            font-weight: bold;
-        }
-
         footer {
-            text-align: center;
-            padding: 25px;
             background: #172033;
             color: white;
-            font-size: 13px;
+            text-align: center;
+            padding: 25px;
         }
 
-        @media (max-width: 750px) {
-            .hero {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            h1 {
-                font-size: 36px;
-            }
-
+        @media (max-width: 700px) {
             .cards {
                 grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 34px;
             }
 
             nav {
@@ -191,49 +162,41 @@
 <body>
 
 <header>
-    <div class="logo">MediCare <span>AI</span></div>
+
+    <div class="logo">
+        MediCare <span>AI</span>
+    </div>
 
     <nav>
         <a href="#home">Home</a>
         <a href="#services">Services</a>
-        <a href="#appointment">Appointment</a>
+        <a href="#assistant">AI Assistant</a>
     </nav>
+
 </header>
+
 
 <section class="hero" id="home">
 
-    <div class="hero-text">
-        <div class="tag">SMART HEALTHCARE PLATFORM</div>
+    <h1>
+        Smart Healthcare with <span>AI</span>
+    </h1>
 
-        <h1>Your Health.<br>Our Intelligence.</h1>
+    <p>
+        MediCare AI is a simple hospital assistant that helps
+        patients understand symptoms and find suitable hospital services.
+    </p>
 
-        <p>
-            MediCare AI helps patients connect with hospital services,
-            check symptoms, and manage appointments through one simple platform.
-        </p>
-
-        <button class="btn" onclick="scrollToAppointment()">
-            Book Appointment
-        </button>
-    </div>
-
-    <div class="hero-card">
-        <div class="status">● System Online</div>
-        <h2>AI Health Assistant</h2>
-        <p>
-            Get quick guidance for common symptoms and hospital services.
-        </p>
-        <br>
-        <button class="btn" onclick="startAssistant()">
-            Start Assistant
-        </button>
-    </div>
+    <button class="button" onclick="openAssistant()">
+        Try AI Assistant
+    </button>
 
 </section>
 
-<section class="services" id="services">
 
-    <h2>What can we help with?</h2>
+<section class="section" id="services">
+
+    <h2>Hospital Services</h2>
 
     <div class="cards">
 
@@ -241,7 +204,7 @@
             <div class="icon">🤖</div>
             <h3>AI Assistant</h3>
             <p>
-                Get basic health guidance and find the right hospital service.
+                Get basic guidance based on the symptoms you enter.
             </p>
         </div>
 
@@ -249,12 +212,119 @@
             <div class="icon">📅</div>
             <h3>Appointments</h3>
             <p>
-                Request a doctor appointment quickly using our simple form.
+                Manage your doctor appointment requests easily.
             </p>
         </div>
 
         <div class="card">
-            <div class="icon">🩺</div>
-            <h3>Symptom Check</h3>
+            <div class="icon">🏥</div>
+            <h3>Departments</h3>
             <p>
-                Enter your
+                Find suitable hospital departments for consultation.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="assistant" id="assistant">
+
+    <h2>AI Health Assistant</h2>
+
+    <p>
+        Enter your symptom below for basic guidance.
+    </p>
+
+    <textarea
+        id="symptom"
+        placeholder="Example: fever, headache, cough...">
+    </textarea>
+
+    <button class="button" onclick="checkSymptom()">
+        Check Symptom
+    </button>
+
+    <div id="result">
+        Your result will appear here.
+    </div>
+
+</section>
+
+
+<footer>
+    © 2026 MediCare AI | Smart Hospital Assistant
+</footer>
+
+
+<script>
+
+function openAssistant() {
+
+    document.getElementById("assistant").scrollIntoView({
+        behavior: "smooth"
+    });
+
+}
+
+
+function checkSymptom() {
+
+    let symptom = document.getElementById("symptom").value.toLowerCase();
+
+    let result = document.getElementById("result");
+
+    if (symptom.includes("fever")) {
+
+        result.innerHTML =
+            "<b>General Medicine</b><br>" +
+            "Fever symptoms detected. Stay hydrated and consider consulting a doctor.";
+
+    }
+
+    else if (symptom.includes("headache")) {
+
+        result.innerHTML =
+            "<b>General Medicine</b><br>" +
+            "Headache detected. Rest and stay hydrated. Consult a doctor if symptoms continue.";
+
+    }
+
+    else if (symptom.includes("cough")) {
+
+        result.innerHTML =
+            "<b>General Medicine</b><br>" +
+            "Cough symptoms detected. Consider medical consultation if symptoms persist.";
+
+    }
+
+    else if (symptom.includes("chest pain")) {
+
+        result.innerHTML =
+            "<b>Urgent Medical Attention</b><br>" +
+            "Chest pain can require urgent medical assessment. Please seek medical care.";
+
+    }
+
+    else if (symptom.trim() === "") {
+
+        result.innerHTML =
+            "Please enter a symptom first.";
+
+    }
+
+    else {
+
+        result.innerHTML =
+            "<b>General Consultation</b><br>" +
+            "For proper evaluation, please consult a qualified healthcare professional.";
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
