@@ -5,12 +5,10 @@ import sqlite3
 
 app = FastAPI(title="MediCare AI Hospital Assistant")
 
-# Database connection
 def get_db():
     return sqlite3.connect("hospital.db")
 
 
-# Create database tables
 def create_tables():
     conn = get_db()
     cursor = conn.cursor()
@@ -36,6 +34,18 @@ def create_tables():
         )
     """)
 
+    columns = [
+        row[1] for row in cursor.execute(
+            "PRAGMA table_info(appointments)"
+        ).fetchall()
+    ]
+
+    if "date" not in columns:
+        cursor.execute("ALTER TABLE appointments ADD COLUMN date TEXT")
+
+    if "time" not in columns:
+        cursor.execute("ALTER TABLE appointments ADD COLUMN time TEXT")
+
     conn.commit()
     conn.close()
 
@@ -43,7 +53,6 @@ def create_tables():
 create_tables()
 
 
-# Request Models
 class SymptomRequest(BaseModel):
     symptom: str
 
@@ -58,12 +67,11 @@ class PatientRequest(BaseModel):
 
 class AppointmentRequest(BaseModel):
     patient_name: str
-    email: EmailStr
+    date: str
+    time: str
     department: str
-    appointment_date: str
 
 
-# Home API
 @app.get("/")
 def home():
     return {
@@ -72,22 +80,18 @@ def home():
     }
 
 
-# Health API
 @app.get("/health")
 def health():
     return {"status": "healthy"}
 
 
-# AI Assistant API
 @app.post("/assistant")
 def assistant(request: SymptomRequest):
     return health_assistant(request.symptom)
 
 
-# Patient Registration API
 @app.post("/register")
 def register_patient(patient: PatientRequest):
-
     conn = get_db()
     cursor = conn.cursor()
 
@@ -121,39 +125,59 @@ def register_patient(patient: PatientRequest):
         conn.close()
 
 
-# Appointment Booking API
-@app.post("/appointment")
+@app.post("/appointments")
 def book_appointment(appointment: AppointmentRequest):
-
     conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("""
         INSERT INTO appointments
-        (patient_name, email, department, appointment_date)
+        (patient_name, date, time, department)
         VALUES (?, ?, ?, ?)
     """, (
         appointment.patient_name,
-        appointment.email,
-        appointment.department,
-        appointment.appointment_date
+        appointment.date,
+        appointment.time,
+        appointment.department
     ))
 
     conn.commit()
     conn.close()
 
     return {
-        "message": "Appointment submitted successfully",
-        "patient": appointment.patient_name,
-        "department": appointment.department,
-        "date": appointment.appointment_date
+        "message": "Appointment booked successfully",
+        "appointment": appointment.model_dump()
     }
 
 
-# View Registered Patients
+@app.get("/appointments")
+def get_appointments():
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT patient_name, date, time, department
+        FROM appointments
+    """)
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    appointments = [
+        {
+            "patient_name": row[0],
+            "date": row[1],
+            "time": row[2],
+            "department": row[3]
+        }
+        for row in rows
+    ]
+
+    return {"appointments": appointments}
+
+
 @app.get("/patients")
 def get_patients():
-
     conn = get_db()
     cursor = conn.cursor()
 
@@ -163,18 +187,3 @@ def get_patients():
     conn.close()
 
     return {"patients": patients}
-
-
-# View Appointments
-@app.get("/appointments")
-def get_appointments():
-
-    conn = get_db()
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT * FROM appointments")
-    appointments = cursor.fetchall()
-
-    conn.close()
-
-    return {"appointments": appointments}
