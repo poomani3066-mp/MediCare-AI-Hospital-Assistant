@@ -6,7 +6,6 @@ import sqlite3
 
 app = FastAPI(title="MediCare AI Hospital Assistant")
 
-# Frontend and Backend Connection
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -16,12 +15,10 @@ app.add_middleware(
 )
 
 
-# Database Connection
 def get_db():
     return sqlite3.connect("hospital.db")
 
 
-# Create Database Tables
 def create_tables():
     conn = get_db()
     cursor = conn.cursor()
@@ -29,9 +26,11 @@ def create_tables():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS patients (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            patient_name TEXT,
+            name TEXT,
             email TEXT UNIQUE,
-            phone TEXT
+            phone TEXT,
+            age INTEGER,
+            gender TEXT
         )
     """)
 
@@ -39,9 +38,11 @@ def create_tables():
         CREATE TABLE IF NOT EXISTS appointments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             patient_name TEXT,
+            email TEXT,
+            department TEXT,
+            appointment_date TEXT,
             date TEXT,
-            time TEXT,
-            department TEXT
+            time TEXT
         )
     """)
 
@@ -52,117 +53,140 @@ def create_tables():
 create_tables()
 
 
-# Request Models
-class Patient(BaseModel):
-    patient_name: str
+class SymptomRequest(BaseModel):
+    symptom: str
+
+
+class PatientRequest(BaseModel):
+    name: str
     email: EmailStr
     phone: str
+    age: int
+    gender: str
 
 
-class Appointment(BaseModel):
+class AppointmentRequest(BaseModel):
     patient_name: str
     date: str
     time: str
     department: str
 
 
-class SymptomRequest(BaseModel):
-    symptom: str
-
-
-# Home Page
 @app.get("/")
 def home():
     return {
-        "message": "Welcome to MediCare AI Hospital Assistant",
-        "status": "Running"
+        "message": "MediCare AI Hospital Assistant is running",
+        "version": "2.0"
     }
 
 
-# Health Check
 @app.get("/health")
 def health():
-    return {"status": "Healthy"}
+    return {"status": "healthy"}
 
 
-# AI Assistant
 @app.post("/assistant")
 def assistant(request: SymptomRequest):
-    try:
-        result = health_assistant(request.symptom)
-        return {"response": result}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    return health_assistant(request.symptom)
 
 
-# Patient Registration
 @app.post("/register")
-def register(patient: Patient):
+def register_patient(patient: PatientRequest):
     conn = get_db()
     cursor = conn.cursor()
 
     try:
-        cursor.execute(
-            "INSERT INTO patients (patient_name, email, phone) VALUES (?, ?, ?)",
-            (patient.patient_name, patient.email, patient.phone)
-        )
+        cursor.execute("""
+            INSERT INTO patients
+            (name, email, phone, age, gender)
+            VALUES (?, ?, ?, ?, ?)
+        """, (
+            patient.name,
+            patient.email,
+            patient.phone,
+            patient.age,
+            patient.gender
+        ))
+
         conn.commit()
-        return {"message": "Patient registered successfully"}
+
+        return {
+            "message": "Patient registered successfully",
+            "patient": patient.name
+        }
 
     except sqlite3.IntegrityError:
-        raise HTTPException(status_code=400, detail="Email already registered")
+        raise HTTPException(
+            status_code=409,
+            detail="Email already registered"
+        )
 
     finally:
         conn.close()
 
 
-# Book Appointment
 @app.post("/appointments")
-def book_appointment(appointment: Appointment):
+def book_appointment(appointment: AppointmentRequest):
     conn = get_db()
     cursor = conn.cursor()
 
-    cursor.execute(
-        """INSERT INTO appointments
-        (patient_name, date, time, department)
-        VALUES (?, ?, ?, ?)""",
-        (
+    try:
+        cursor.execute("""
+            INSERT INTO appointments
+            (patient_name, date, time, department)
+            VALUES (?, ?, ?, ?)
+        """, (
             appointment.patient_name,
             appointment.date,
             appointment.time,
             appointment.department
-        )
-    )
+        ))
 
-    conn.commit()
-    conn.close()
+        conn.commit()
 
-    return {"message": "Appointment booked successfully"}
+        return {
+            "message": "Appointment booked successfully",
+            "appointment": appointment.model_dump()
+        }
+
+    finally:
+        conn.close()
 
 
-# View Appointments
 @app.get("/appointments")
 def get_appointments():
     conn = get_db()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM appointments")
-    data = cursor.fetchall()
+    cursor.execute("""
+        SELECT patient_name, date, time, department
+        FROM appointments
+    """)
 
+    rows = cursor.fetchall()
     conn.close()
 
-    return {"appointments": data}
+    appointments = [
+        {
+            "patient_name": row[0],
+            "date": row[1],
+            "time": row[2],
+            "department": row[3]
+        }
+        for row in rows
+    ]
+
+    return {"appointments": appointments}
 
 
-# View Patients
 @app.get("/patients")
 def get_patients():
     conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("SELECT * FROM patients")
-    data = cursor.fetchall()
+    patients = cursor.fetchall()
 
     conn.close()
 
-    return {"patients": data}
+    return {"patients": patients}
