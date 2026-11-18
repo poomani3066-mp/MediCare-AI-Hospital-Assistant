@@ -1,242 +1,199 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patient Registration - MediCare AI</title><style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
 
-    <title>Patient Registration - MediCare AI</title>
+body {
+    background: #f4f7fb;
+    color: #172033;
+}
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
+header {
+    background: white;
+    padding: 20px 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+}
 
-        body {
-            background: #f4f7fb;
-            color: #172033;
-        }
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
 
-        header {
-            background: white;
-            padding: 20px 8%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #ddd;
-        }
+.logo span {
+    color: #2674e8;
+}
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
+header a {
+    text-decoration: none;
+    color: #2674e8;
+    font-weight: bold;
+}
 
-        .logo span {
-            color: #2674e8;
-        }
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 35px;
+    background: white;
+    border-radius: 15px;
+    border: 1px solid #e3e7ed;
+}
 
-        header a {
-            text-decoration: none;
-            color: #2674e8;
-            font-weight: bold;
-        }
+h1 {
+    margin-bottom: 10px;
+}
 
-        .container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 35px;
-            background: white;
-            border-radius: 15px;
-            border: 1px solid #e3e7ed;
-        }
+.description {
+    color: #687386;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
 
-        h1 {
-            margin-bottom: 10px;
-        }
+label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
 
-        .description {
-            color: #687386;
-            margin-bottom: 25px;
-            line-height: 1.6;
-        }
+input, select {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #ccd3dd;
+    border-radius: 8px;
+    font-size: 15px;
+}
 
-        label {
-            display: block;
-            margin-top: 15px;
-            margin-bottom: 6px;
-            font-weight: bold;
-        }
+.button {
+    width: 100%;
+    margin-top: 25px;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    background: #2674e8;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
 
-        input,
-        select {
-            width: 100%;
-            padding: 13px;
-            border: 1px solid #ccd3dd;
-            border-radius: 8px;
-            font-size: 15px;
-        }
+.button:disabled {
+    background: #8aaee8;
+}
 
-        .button {
-            width: 100%;
-            margin-top: 25px;
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
-            background: #2674e8;
-            color: white;
-            font-size: 15px;
-            cursor: pointer;
-        }
+#registrationResult {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f1f5fa;
+    border-radius: 8px;
+    line-height: 1.6;
+}
 
-        #registrationResult {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f1f5fa;
-            border-radius: 8px;
-            line-height: 1.6;
-        }
-
-        footer {
-            margin-top: 60px;
-            background: #172033;
-            color: white;
-            text-align: center;
-            padding: 25px;
-        }
-    </style>
-</head>
-
-<body>
-
-<header>
-
-    <div class="logo">
-        MediCare <span>AI</span>
-    </div>
-
+footer {
+    margin-top: 60px;
+    background: #172033;
+    color: white;
+    text-align: center;
+    padding: 25px;
+}
+</style></head><body><header>
+    <div class="logo">MediCare <span>AI</span></div>
     <a href="index.html">Back to Home</a>
+</header><div class="container"><h1>Patient Registration</h1><p class="description">
+Register your details to access MediCare AI hospital services.
+</p><form id="registrationForm" onsubmit="registerPatient(event)"><label>Full Name</label>
+<input type="text" id="fullName" required placeholder="Enter your full name">
 
-</header>
+<label>Email Address</label>
+<input type="email" id="email" required placeholder="Enter your email">
 
+<label>Phone Number</label>
+<input type="tel" id="phone" required placeholder="Enter your phone number">
 
-<div class="container">
+<label>Age</label>
+<input type="number" id="age" required min="1" max="120" placeholder="Enter your age">
 
-    <h1>Patient Registration</h1>
+<label>Gender</label>
+<select id="gender" required>
 
-    <p class="description">
-        Register your details to access MediCare AI hospital services.
-    </p>
+<option value="">Select Gender</option>
+<option value="Male">Male</option>
+<option value="Female">Female</option>
+<option value="Other">Other</option>
+</select><button class="button" id="registerButton" type="submit">
+Register Patient
+</button></form><div id="registrationResult">
+Registration status will appear here.
+</div></div><footer>
+© 2026 MediCare AI | Smart Hospital Assistant
+</footer><script>
 
-
-    <form onsubmit="registerPatient(event)">
-
-        <label>Full Name</label>
-        <input
-            type="text"
-            id="fullName"
-            placeholder="Enter your full name">
-
-        <label>Email Address</label>
-        <input
-            type="email"
-            id="email"
-            placeholder="Enter your email">
-
-        <label>Phone Number</label>
-        <input
-            type="tel"
-            id="phone"
-            placeholder="Enter your phone number">
-
-        <label>Age</label>
-        <input
-            type="number"
-            id="age"
-            placeholder="Enter your age">
-
-        <label>Gender</label>
-
-        <select id="gender">
-
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-
-        </select>
-
-
-        <button class="button" type="submit">
-            Register Patient
-        </button>
-
-    </form>
-
-
-    <div id="registrationResult">
-        Registration status will appear here.
-    </div>
-
-</div>
-
-
-<footer>
-    © 2026 MediCare AI | Smart Hospital Assistant
-</footer>
-
-
-<script>
-
-function registerPatient(event) {
+async function registerPatient(event) {
 
     event.preventDefault();
 
-    let name =
-        document.getElementById("fullName").value;
+    const result = document.getElementById("registrationResult");
+    const button = document.getElementById("registerButton");
 
-    let email =
-        document.getElementById("email").value;
+    const patient = {
+        name: document.getElementById("fullName").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        age: Number(document.getElementById("age").value),
+        gender: document.getElementById("gender").value
+    };
 
-    let phone =
-        document.getElementById("phone").value;
+    button.disabled = true;
+    button.innerText = "Registering...";
 
-    let age =
-        document.getElementById("age").value;
+    result.innerText = "Please wait. Submitting registration...";
 
-    let gender =
-        document.getElementById("gender").value;
+    try {
 
-    let result =
-        document.getElementById("registrationResult");
+        const response = await fetch(
+            "https://nhs-digital-hospital-agent.onrender.com/register",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(patient)
+            }
+        );
 
+        const data = await response.json();
 
-    if (
-        name === "" ||
-        email === "" ||
-        phone === "" ||
-        age === "" ||
-        gender === ""
-    ) {
+        if (!response.ok) {
+            throw new Error(data.detail || "Registration failed");
+        }
 
         result.innerHTML =
-            "Please fill in all registration details.";
+            "<b>Registration Successful!</b><br>" +
+            "Patient Name: " + patient.name + "<br>" +
+            "Email: " + patient.email + "<br>" +
+            "Your details have been saved successfully.";
 
-        return;
+        document.getElementById("registrationForm").reset();
+
+    } catch (error) {
+
+        result.innerText = "Error: " + error.message;
+
+    } finally {
+
+        button.disabled = false;
+        button.innerText = "Register Patient";
+
     }
-
-
-    result.innerHTML =
-        "<b>Registration Successful!</b><br>" +
-        "Patient Name: " + name + "<br>" +
-        "Email: " + email + "<br>" +
-        "Phone: " + phone + "<br>" +
-        "Your patient registration has been submitted successfully.";
-
 }
 
-</script>
-
-</body>
+</script></body>
 </html>
