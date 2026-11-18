@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, EmailStr
 from assistant import health_assistant
 import sqlite3
@@ -74,10 +75,7 @@ class AppointmentRequest(BaseModel):
 
 @app.get("/")
 def home():
-    return {
-        "message": "MediCare AI Hospital Assistant is running",
-        "version": "2.0"
-    }
+    return FileResponse("index.html")
 
 
 @app.get("/health")
@@ -113,80 +111,3 @@ def register_patient(patient: PatientRequest):
         return {
             "message": "Patient registered successfully",
             "patient": patient.name
-        }
-
-    except sqlite3.IntegrityError:
-        raise HTTPException(
-            status_code=409,
-            detail="Email already registered"
-        )
-
-    finally:
-        conn.close()
-
-
-@app.post("/appointments")
-def book_appointment(appointment: AppointmentRequest):
-    conn = get_db()
-    cursor = conn.cursor()
-
-    try:
-        cursor.execute("""
-            INSERT INTO appointments
-            (patient_name, date, time, department)
-            VALUES (?, ?, ?, ?)
-        """, (
-            appointment.patient_name,
-            appointment.date,
-            appointment.time,
-            appointment.department
-        ))
-
-        conn.commit()
-
-        return {
-            "message": "Appointment booked successfully",
-            "appointment": appointment.model_dump()
-        }
-
-    finally:
-        conn.close()
-
-
-@app.get("/appointments")
-def get_appointments():
-    conn = get_db()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        SELECT patient_name, date, time, department
-        FROM appointments
-    """)
-
-    rows = cursor.fetchall()
-    conn.close()
-
-    appointments = [
-        {
-            "patient_name": row[0],
-            "date": row[1],
-            "time": row[2],
-            "department": row[3]
-        }
-        for row in rows
-    ]
-
-    return {"appointments": appointments}
-
-
-@app.get("/patients")
-def get_patients():
-    conn = get_db()
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT * FROM patients")
-    patients = cursor.fetchall()
-
-    conn.close()
-
-    return {"patients": patients}
