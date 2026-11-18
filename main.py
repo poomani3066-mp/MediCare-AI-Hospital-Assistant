@@ -103,10 +103,7 @@ def assistant(request: SymptomRequest):
         return {"response": str(result)}
 
     except Exception as error:
-        raise HTTPException(
-            status_code=500,
-            detail=str(error)
-        )
+        raise HTTPException(status_code=500, detail=str(error))
 
 
 @app.post("/register")
@@ -192,16 +189,16 @@ def get_appointments():
 
         rows = cursor.fetchall()
 
-        appointments = []
-
-        for row in rows:
-            appointments.append({
+        appointments = [
+            {
                 "id": row[0],
                 "patient_name": row[1],
                 "date": row[2],
                 "time": row[3],
                 "department": row[4]
-            })
+            }
+            for row in rows
+        ]
 
         return {"appointments": appointments}
 
