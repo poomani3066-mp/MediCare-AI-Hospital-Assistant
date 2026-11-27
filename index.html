@@ -24,6 +24,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
     box-shadow: 0 2px 12px #00000008;
     position: sticky;
     top: 0;
@@ -43,7 +44,7 @@ header {
 nav a {
     text-decoration: none;
     color: #40536b;
-    margin-left: 22px;
+    margin-left: 18px;
     font-size: 14px;
 }
 
@@ -151,4 +152,367 @@ textarea {
 footer {
     background: #123b65;
     color: white;
-    text
+    text-align: center;
+    padding: 25px;
+}
+
+@media(max-width:600px) {
+    header {
+        gap: 15px;
+    }
+
+    nav a {
+        margin-left: 5px;
+        font-size: 12px;
+    }
+
+    .hero h1 {
+        font-size: 32px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">MediCare <span>AI</span></div>
+
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#register">Register</a>
+        <a href="#symptoms">AI Assistant</a>
+        <a href="#appointment">Appointment</a>
+    </nav>
+</header>
+
+<section class="hero" id="home">
+    <h1>Your Health, <span>Our Priority</span></h1>
+
+    <p>
+        Welcome to MediCare AI Smart Hospital.
+        Experience digital healthcare with patient
+        registration, AI symptom assistance and
+        easy online appointment booking.
+    </p>
+
+    <button onclick="location.href='#appointment'">
+        Book Appointment
+    </button>
+</section>
+
+<section class="section" id="services">
+    <h2>Our Services</h2>
+
+    <div class="cards">
+
+        <div class="card">
+            <h3>AI Health Assistant</h3>
+            <p>Get basic health guidance based on your symptoms.</p>
+        </div>
+
+        <div class="card">
+            <h3>Patient Registration</h3>
+            <p>Register patient details through our digital system.</p>
+        </div>
+
+        <div class="card">
+            <h3>Online Appointment</h3>
+            <p>Request hospital appointments easily online.</p>
+        </div>
+
+        <div class="card">
+            <h3>Digital Records</h3>
+            <p>Store and manage patient and appointment information.</p>
+        </div>
+
+    </div>
+</section>
+
+<section class="section" id="register">
+    <h2>Patient Registration</h2>
+
+    <div class="panel">
+
+        <form id="registerForm">
+
+            <input type="text" id="name"
+                placeholder="Patient Name" required>
+
+            <input type="email" id="email"
+                placeholder="Email Address" required>
+
+            <input type="tel" id="phone"
+                placeholder="Phone Number" required>
+
+            <input type="number" id="age"
+                placeholder="Age" min="1" max="120" required>
+
+            <select id="gender" required>
+                <option value="">Select Gender</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+            </select>
+
+            <button type="submit">Register Patient</button>
+
+        </form>
+
+        <div class="result" id="registerResult"></div>
+
+    </div>
+</section>
+
+<section class="section" id="symptoms">
+    <h2>AI Symptom Assistant</h2>
+
+    <div class="panel">
+
+        <p>Describe your symptoms below.</p>
+
+        <textarea id="symptom"
+            placeholder="Example: I have fever and headache"></textarea>
+
+        <button onclick="checkSymptoms()">Check Symptoms</button>
+
+        <div class="result" id="symptomResult"></div>
+
+        <p style="margin-top:15px;color:#63748a;font-size:13px;">
+            This tool provides basic guidance only.
+            It does not replace professional medical diagnosis.
+            For emergencies, seek immediate medical care.
+        </p>
+
+    </div>
+</section>
+
+<section class="section" id="appointment">
+    <h2>Book Your Appointment</h2>
+
+    <div class="panel">
+
+        <form id="appointmentForm">
+
+            <input type="text" id="patientName"
+                placeholder="Patient Name" required>
+
+            <input type="date" id="date" required>
+
+            <input type="time" id="time" required>
+
+            <select id="department" required>
+                <option value="">Select Department</option>
+                <option>General Medicine</option>
+                <option>Cardiology</option>
+                <option>Neurology</option>
+                <option>Orthopaedics</option>
+                <option>Paediatrics</option>
+                <option>Dermatology</option>
+            </select>
+
+            <button type="submit">Book Appointment</button>
+
+        </form>
+
+        <div class="result" id="appointmentResult"></div>
+
+    </div>
+</section>
+
+<section class="section" id="records">
+    <h2>Appointment Records</h2>
+
+    <div class="panel">
+        <button onclick="loadAppointments()">
+            View Appointments
+        </button>
+
+        <div id="appointmentList"></div>
+    </div>
+</section>
+
+<footer>
+    <h3>MediCare AI Smart Hospital</h3>
+    <p style="margin-top:10px;">
+        Smart Healthcare | Better Patient Experience
+    </p>
+    <p style="margin-top:10px;">
+        © 2026 MediCare AI. All Rights Reserved.
+    </p>
+</footer>
+
+<script>
+
+const API = window.location.origin;
+
+function showResult(id, message) {
+    const box = document.getElementById(id);
+    box.style.display = "block";
+    box.innerHTML = message;
+}
+
+document.getElementById("registerForm")
+.addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const data = {
+        name: document.getElementById("name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        age: Number(document.getElementById("age").value),
+        gender: document.getElementById("gender").value
+    };
+
+    try {
+        const response = await fetch(API + "/register", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.detail || "Registration failed");
+        }
+
+        showResult("registerResult",
+            "✅ " + result.message + "<br>Patient: " + result.patient);
+
+        this.reset();
+
+    } catch(error) {
+        showResult("registerResult", "❌ " + error.message);
+    }
+});
+
+
+async function checkSymptoms() {
+
+    const symptom = document.getElementById("symptom").value.trim();
+
+    if (!symptom) {
+        showResult("symptomResult", "Please enter your symptoms.");
+        return;
+    }
+
+    try {
+
+        const response = await fetch(API + "/symptoms", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({symptom: symptom})
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.detail || "Unable to check symptoms");
+        }
+
+        showResult(
+            "symptomResult",
+            "<b>Category:</b> " + result.category +
+            "<br><b>Guidance:</b> " + result.message
+        );
+
+    } catch(error) {
+        showResult("symptomResult", "❌ " + error.message);
+    }
+}
+
+
+document.getElementById("appointmentForm")
+.addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const data = {
+        patient_name: document.getElementById("patientName").value.trim(),
+        date: document.getElementById("date").value,
+        time: document.getElementById("time").value,
+        department: document.getElementById("department").value
+    };
+
+    try {
+
+        const response = await fetch(API + "/appointments", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.detail || "Booking failed");
+        }
+
+        showResult(
+            "appointmentResult",
+            "✅ " + result.message +
+            "<br>Patient: " + result.appointment.patient_name +
+            "<br>Date: " + result.appointment.date +
+            "<br>Time: " + result.appointment.time +
+            "<br>Department: " + result.appointment.department
+        );
+
+        this.reset();
+
+    } catch(error) {
+        showResult("appointmentResult", "❌ " + error.message);
+    }
+});
+
+
+async function loadAppointments() {
+
+    const list = document.getElementById("appointmentList");
+
+    list.innerHTML = "Loading appointments...";
+
+    try {
+
+        const response = await fetch(API + "/appointments");
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error("Unable to load appointments");
+        }
+
+        if (!result.appointments.length) {
+            list.innerHTML = "<p>No appointments found.</p>";
+            return;
+        }
+
+        list.innerHTML = result.appointments.map(item => `
+            <div style="padding:15px;border-bottom:1px solid #ddd;">
+                <b>${escapeHTML(item.patient_name)}</b><br>
+                Department: ${escapeHTML(item.department)}<br>
+                Date: ${escapeHTML(item.date)}<br>
+                Time: ${escapeHTML(item.time)}
+            </div>
+        `).join("");
+
+    } catch(error) {
+        list.innerHTML = "❌ " + escapeHTML(error.message);
+    }
+}
+
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+    })[char]);
+}
+
+</script>
+
+</body>
+</html>
